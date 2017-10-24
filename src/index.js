@@ -29,6 +29,11 @@ window.Vue = new Vue({
   	router : router,
 	data : {
 		busca : ''
+	},
+	created(){
+		if(!auth.currentUser){
+			router.push({name:'login'})
+		}
 	}
 	
 });

@@ -5,7 +5,7 @@
 	    </md-toolbar>
 
 	    <md-list>
-	    	<md-list-item v-for="c in categorias">
+	    	<md-list-item v-for="c in categorias" v-bind:key='c.editions[0].key'>
 		        <a  v-on:click="buscar(c.editions[0].id)"><span>{{c.webTitle}}</span></a>
 	      	</md-list-item>
 	    </md-list>

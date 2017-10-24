@@ -55,7 +55,7 @@ export default {
 		login(){
 			auth.signInWithEmailAndPassword(this.email,this.senha)
 			.then(user => {
-				router.push({name:'home'});
+				router.push({name:'noticias'});
 				Eventos.$emit('logged');
 			})
 			.catch(err => {

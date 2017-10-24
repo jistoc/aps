@@ -11,8 +11,12 @@
 					<div class="md-title">{{titulo}}</div>
 					<div class="md-subhead">{{dataFormatada}}</div>
 				</md-card-header>
-				
+
 				<md-card-actions>
+					<md-button v-if="!elista" @click="add_leitura" class="md-raised md-primary">
+						<md-icon>library_add</md-icon>
+					</md-button>
+					&nbsp;&nbsp;
 					<router-link :to="url">
 						<md-button class="md-raised md-primary">
 							Ler
@@ -21,14 +25,20 @@
 				</md-card-actions>
 			</md-card>
 		</div>
+		<md-snackbar md-position="top center" ref="snackbar" md-duration="4000">
+			<span>{{msg}}</span>
+
+			<md-button class="md-warn" @click="fechar_snack();">Fechar</md-button>
+		</md-snackbar>
 	</md-layout>
+	
 </template>
 
 
 <script>
 import moment from 'moment';
 export default {
-	props : ['thumbnail','titulo','url','data'],
+	props : ['thumbnail','titulo','url','data', 'elista'],
 	computed : {
 
 		dataFormatada() {
@@ -36,6 +46,11 @@ export default {
 		}
 
 	},
+    data : function() {
+    	return {
+    		msg : ''
+    	}
+    },
 	methods : {
 		abrir(url){
 			let u = url.split("/");
@@ -47,6 +62,46 @@ export default {
 				router.push({ name: 'modalnoticia2', params: { a0: u[0], a1: u[1], a2: u[2], a3: u[3], a4: u[4], a5: u[5] }});
 				break;
 			}
+		},
+		add_leitura(){
+
+
+			db.collection("leitura")
+			.where('userId','==',auth.currentUser.uid)
+			.where('id','==',this.url)
+			.get()
+			.then( result => {
+				if(result.docs.length==0){
+
+					db.collection("leitura").add({
+						thumbnail : this.thumbnail,
+						webTitle: this.titulo,
+						webPublicationDate : this.data,
+						id : this.url,
+						userId : auth.currentUser.uid
+					})
+					.then( doc => {
+						this.msg = 'Notícia adicionada para leitura!'
+						this.$refs.snackbar.open();
+					})
+					.catch(error => {
+
+						this.msg = 'Falha ao adicionar a lista!'
+						this.$refs.snackbar.open();
+					});
+				} else {
+					this.msg = 'Noticia já foi adicionada!'
+					this.$refs.snackbar.open();
+				}
+			})
+			.catch(err => {
+				this.msg = 'Falha ao adicionar a lista!'
+			 	this.$refs.snackbar.open();
+			});
+
+		},
+		fechar_snack(){
+			this.$refs.snackbar.close();
 		}
 	}
 }

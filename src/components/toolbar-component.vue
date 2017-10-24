@@ -5,7 +5,9 @@
 				<md-icon>menu</md-icon>
 			</md-button>
 
-			<h2 class="md-title" style="flex: 1">Notícias</h2>
+			<h2 class="md-title" style="flex: 1">
+				<router-link to="noticias" id="noticias">Notícias</router-link>
+			</h2>
 
 			<md-toolbar>
 				<md-button class="md-icon-button" v-if="busca" v-on:click="limpar()">
@@ -25,23 +27,15 @@
 
 					<md-menu-content>
 
-						<md-menu-item v-if="!logged" @click="login">
-							<md-icon>reply_all</md-icon>
-							<span>Log-in</span>
-						</md-menu-item>
-						<md-menu-item v-if="!logged" @click="criar">
-							<md-icon>create</md-icon>
-							<span>Nova conta</span>
-						</md-menu-item>
-						<md-menu-item v-if="logged"  >
+						<md-menu-item>
 							<md-icon>star</md-icon>
 							<span>Favoritos</span>
 						</md-menu-item>
-						<md-menu-item v-if="logged"  >
+						<md-menu-item @click="lista">
 							<md-icon>library_books</md-icon>
 							<span>Lista</span>
 						</md-menu-item>
-						<md-menu-item v-if="logged" @click="logout">
+						<md-menu-item @click="logout">
 							<md-icon>exit_to_app</md-icon>
 							<span>Sair</span>
 						</md-menu-item>
@@ -53,10 +47,6 @@
 			</md-toolbar>
 
 		</md-toolbar>
-		<md-snackbar md-position="top center" ref="snackbar" md-duration="4000">
-			<span>Falha ao realizar logout.</span>
-			<md-button class="md-warn" @click="logout">Tentar Novamente</md-button>
-		</md-snackbar>
 	</div>
 	
 
@@ -78,29 +68,22 @@ export default {
 		},
 		logout(){
 			auth.signOut().then(() => {
-				this.logged = false;
+				router.push({name:'login'});
 			}).catch(err => {
+				console.log(err);
 				this.$refs.snackbar.open();
 			});
 		},
-		login(){
-			router.push({name:'login'});
-		},	
-		criar(){
-			router.push({name:'nova-conta'});
-		},
-		home(){
-			router.push({name:'home'});
+		lista(){
+			router.push({name:'minha-lista'});
 		}
 	},
 	data : () => {
 		return {
-			busca : '',
-			logged : false
+			busca : ''
 		}
 	},
 	created(){
-		this.logged = auth.currentUser ? true : false;
 		Eventos.$on('logged', () => {
 			this.logged = true;
 		})
@@ -110,5 +93,8 @@ export default {
 <style>
 .icon-fix{
 	margin-left : -50px;
+}
+#noticias{
+	color:white;
 }
 </style>
