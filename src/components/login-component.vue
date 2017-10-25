@@ -53,9 +53,12 @@ export default {
 	},
 	methods : {
 		login(){
+
 			auth.signInWithEmailAndPassword(this.email,this.senha)
 			.then(user => {
-				router.push({name:'noticias'});
+				
+				router.push({name:'n'});
+
 				Eventos.$emit('logged');
 			})
 			.catch(err => {
@@ -75,7 +78,8 @@ export default {
 					this.msg.texto = "Falha ao fazer login!";
 					break;
 				}
-			})
+			});
+			
 		}
 	}
 	

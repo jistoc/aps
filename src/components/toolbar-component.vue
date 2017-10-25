@@ -9,7 +9,7 @@
 				<router-link to="noticias" id="noticias">Notícias</router-link>
 			</h2>
 
-			<md-toolbar>
+			<md-toolbar v-if="matched">
 				<md-button class="md-icon-button" v-if="busca" v-on:click="limpar()">
 					<md-icon>clear</md-icon>
 				</md-button>
@@ -20,6 +20,8 @@
 					<md-icon>search</md-icon>
 				</md-button>
 
+			</md-toolbar>
+			<md-toolbar>
 				<md-menu md-offset-x="-99" md-offset-y="50">
 					<md-button class="md-icon-button" md-menu-trigger>
 						<md-icon>account_circle</md-icon>
@@ -27,7 +29,7 @@
 
 					<md-menu-content>
 
-						<md-menu-item>
+						<md-menu-item @click="favoritos">
 							<md-icon>star</md-icon>
 							<span>Favoritos</span>
 						</md-menu-item>
@@ -41,10 +43,9 @@
 						</md-menu-item>
 					</md-menu-content>
 				</md-menu>
-
-
-
 			</md-toolbar>
+
+
 
 		</md-toolbar>
 	</div>
@@ -75,7 +76,10 @@ export default {
 			});
 		},
 		lista(){
-			router.push({name:'minha-lista'});
+			router.push({name:'l'});
+		},
+		favoritos(){
+			router.push({name:'f'});
 		}
 	},
 	data : () => {
@@ -87,7 +91,12 @@ export default {
 		Eventos.$on('logged', () => {
 			this.logged = true;
 		})
-	}
+	},
+	computed: {
+  		matched: function() {
+    		return this.$route.path.indexOf('/n') == 0;
+    	}
+  	},
 }
 </script>
 <style>

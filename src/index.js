@@ -28,10 +28,12 @@ window.Vue = new Vue({
 	el: "#app",
   	router : router,
 	data : {
-		busca : ''
+		busca : '',
+		usuario : false
 	},
 	created(){
-		if(!auth.currentUser){
+
+		if(!this.usuario){
 			router.push({name:'login'})
 		}
 	}

@@ -17,11 +17,9 @@
 						<md-icon>library_add</md-icon>
 					</md-button>
 					&nbsp;&nbsp;
-					<router-link :to="url">
-						<md-button class="md-raised md-primary">
+						<md-button class="md-raised md-primary" @click="abrir(url)">
 							Ler
 						</md-button>
-					</router-link>
 				</md-card-actions>
 			</md-card>
 		</div>
@@ -53,36 +51,45 @@ export default {
     },
 	methods : {
 		abrir(url){
+			if(url.charAt(0)=='/'){
+				url = url.substring(1);
+			}
 			let u = url.split("/");
+			console.log('noticia card - url ');
+			console.log(this.url);
 			switch(u.length){
 				case 5 :
-				router.push({ name: 'modalnoticia', params: { a0: u[0], a1: u[1], a2: u[2], a3: u[3], a4: u[4] }});
+				router.push({ name: router.history.current.name+'1', params: { a0: u[0], a1: u[1], a2: u[2], a3: u[3], a4: u[4] }});
 				break;
 				case 6 :
-				router.push({ name: 'modalnoticia2', params: { a0: u[0], a1: u[1], a2: u[2], a3: u[3], a4: u[4], a5: u[5] }});
+				router.push({ name: router.history.current.name+'2', params: { a0: u[0], a1: u[1], a2: u[2], a3: u[3], a4: u[4], a5: u[5] }});
 				break;
 			}
 		},
 		add_leitura(){
-
+			var aux = this.url;
+					if(this.url.charAt(0)!='/')
+						aux = '/' + this.url;
 
 			db.collection("leitura")
 			.where('userId','==',auth.currentUser.uid)
-			.where('id','==',this.url)
+			.where('id','==',aux)
 			.get()
 			.then( result => {
 				if(result.docs.length==0){
+					
 
 					db.collection("leitura").add({
 						thumbnail : this.thumbnail,
 						webTitle: this.titulo,
 						webPublicationDate : this.data,
-						id : this.url,
+						id : aux,
 						userId : auth.currentUser.uid
 					})
 					.then( doc => {
 						this.msg = 'Notícia adicionada para leitura!'
 						this.$refs.snackbar.open();
+
 					})
 					.catch(error => {
 

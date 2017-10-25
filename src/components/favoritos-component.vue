@@ -1,16 +1,14 @@
 <template>
 	<div class='lista-wrapper'>
-		
-		<div v-if="!lista || lista.length==0" >
-			<center>Nenhuma notícia na lista!</center>
+		<div v-if="!lista || lista.length == 0" >
+			<center>Nenhuma notícia favorita</center>
 		</div>
 		<md-layout :md-gutter="8">
 			<noticiacard-component  v-for='n in lista' v-bind:key='n.id'
 				v-bind:titulo='n.webTitle'
 				v-bind:data='n.webPublicationDate'
 				v-bind:thumbnail='n.thumbnail'
-				v-bind:url='n.id'
-				elista='10'>
+				v-bind:url='n.id'>
 			</noticiacard-component>
 		</md-layout>
 		<router-view></router-view>
@@ -32,7 +30,7 @@
         methods : {
         },
         beforeMount(){
-        	db.collection("leitura").where('userId','==',auth.currentUser.uid).onSnapshot( docs => {
+        	db.collection("favoritos").where('userId','==',auth.currentUser.uid).onSnapshot( docs => {
 				this.lista = [];
 				docs.forEach( doc => {
 					this.lista.push({
@@ -40,7 +38,7 @@
 						webPublicationDate : doc.data().webPublicationDate,
 						thumbnail : doc.data().thumbnail,
 						id : doc.data().id,
-						lId : doc.id
+						fId : doc.id
 					})
 				})
 			})
